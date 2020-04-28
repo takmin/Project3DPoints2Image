@@ -12,3 +12,15 @@ To use this tool, you need to follow the steps below:
     - https://github.com/takmin/Calibrate2D3D
 4. To confirm the calibration result, project 3D points to an image with this tools.  You need calibration parameters obtained at the step 2 and 3.
 
+Here is usage:
+
+```
+Project3DPoints2Image.exe -pcd=<point cloud> -img=<image> -int=<camera param> -ext=<external param>
+  where options are:
+                   -h                    = Print this help
+                   -pcd file_name        = Input PCD/PLY file name
+                   -img file_name        = Input image file name
+                   -int file_name        = Internal camera parameter file obtained at step 2.
+                   -ext file_name        = External camera parameter file obtained at step 3.
+```
+
