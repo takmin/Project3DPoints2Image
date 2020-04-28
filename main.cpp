@@ -1,5 +1,6 @@
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <pcl/console/parse.h>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -9,10 +10,10 @@
 
 void printHelp(int argc, char **argv)
 {
-	printf("Syntax is: %s -json <input_file> -input_dir <input_dir>\n", argv[0]);
+	printf("Syntax is: %s -pcd=<point cloud> -img=<image> -int=<camera param> -ext=<external param>\n", argv[0]);
 	printf("  where options are:\n");
 	printf("                   -h                    = Print this help\n");
-	printf("                   -pcd file_name        = Input PCD file name\n");
+	printf("                   -pcd file_name        = Input PCD/PLY file name\n");
 	printf("                   -img file_name        = Input image file name\n");
 	printf("                   -int file_name        = Internal camera parameter file\n");
 	printf("                   -ext file_name        = External camera parameter file\n");
@@ -149,10 +150,17 @@ int main(int argc, char * argv[])
 
 	// load point cloud
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	int ret = pcl::io::loadPCDFile(pcd_file, *cloud);
+	std::string ext = boost::filesystem::path(pcd_file).extension().string();
+	int ret = -1;
+	if (ext == ".pcd" || ext == ".PCD") {
+		ret = pcl::io::loadPCDFile(pcd_file, *cloud);
+	}
+	else if (ext == ".ply" || ext == ".PLY") {
+		ret = pcl::io::loadPLYFile(pcd_file, *cloud);
+	}
 	if (ret < 0) {
 		std::cerr << "Fail to load " << pcd_file << std::endl;
-		return -1;
+		return false;
 	}
 
 	cv::Mat img = cv::imread(img_file);
